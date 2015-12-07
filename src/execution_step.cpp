@@ -13,6 +13,7 @@
 
 ExecutionStep::ExecutionStep(Program* program) {
   this->program = program;
+  this->toPipe = NULL;
 }
 
 void ExecutionStep::setPipe(ExecutionStep* step) {
@@ -51,12 +52,9 @@ void ExecutionStep::execute(int* parent_des_p) {
 		exit(1);
 	}
 
-	if (toPipe != NULL) {
-    close(des_p[1]);
-    close(des_p[0]);
-  }
-
-	wait(0);
-	if (toPipe != NULL) wait(0);
+  close(des_p[1]);
+  close(des_p[0]);
+  wait(0);
+  if (toPipe != NULL) wait(0);
 
 }

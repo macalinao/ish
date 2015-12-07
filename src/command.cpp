@@ -17,7 +17,7 @@ void Command::execute() {
   const char* cmd = this->str.c_str();
   try {
     ExecutionStep* start = parse_tokens(*tokenize(cmd));
-    start->execute(NULL);
+    start->execute((int*) NULL);
   } catch (std::string ex) {
     fprintf(stderr, "ish: error running command %s: %s\n", cmd, ex.c_str());
     return;
