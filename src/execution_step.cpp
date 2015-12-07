@@ -20,17 +20,21 @@ void ExecutionStep::setPipe(ExecutionStep* step) {
 }
 
 pid_t ExecutionStep::execute(int* fds) {
-  pid_t pid;
-  if ((pid = fork()) == -1) {
-    fprintf(stderr, "ish: can't fork: %s\n", strerror(errno));
-    throw std::string();
+  if (pipe(fds) == -1) {
+    throw std::string("Pipe failed");
   }
 
+  pid_t pid = fork();
+
+  // error check
+  if (pid == -1) {
+    throw std::string("can't fork");
+  }
+
+  // return child pid
   if (pid != 0) {
     return pid;
   }
-
-  pipe(fds);
 
   const char* executable = this->program->getExecutable().c_str();
   char** argv = this->program->argv();
