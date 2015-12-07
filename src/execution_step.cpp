@@ -21,6 +21,12 @@ void ExecutionStep::setPipe(ExecutionStep* step) {
 }
 
 void ExecutionStep::execute(int in_fd) {
+  if (in_fd == -1) {
+    if (fork() != 0) {
+      wait(0);
+      return;
+    }
+  }
 
   const char* executable = this->program->getExecutable().c_str();
   char** argv = this->program->argv();
