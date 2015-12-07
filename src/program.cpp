@@ -44,16 +44,14 @@ std::vector<std::string> Program::argsWithPrefix(std::string prefix, bool negate
   return ret;
 }
 
-char* convert(const std::string & s) {
-  char *pc = new char[s.size() + 1];
-  std::strcpy(pc, s.c_str());
-  return pc;
+const char* convert(const std::string & s) {
+  return s.c_str();
 }
 
 char** Program::argv() {
   std::vector<std::string> args = this->arguments;
-  std::vector<char*> argv;
-  argv.push_back((char*) this->executable.c_str());
+  std::vector<const char*> argv;
+  argv.push_back(this->executable.c_str());
   std::transform(args.begin(), args.end(), std::back_inserter(argv), convert);
   argv.push_back((char*) NULL);
   return (char**) &argv[0];
