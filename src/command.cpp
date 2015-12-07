@@ -7,6 +7,7 @@
 #include <sysexits.h>
 #include <unistd.h>
 
+#include "tokenizer.h"
 #include "command.h"
 #include "program.h"
 
@@ -23,7 +24,7 @@ void Command::execute() {
   }
 
   if (pid == 0) {
-    Program program(cmd);
+    Program program(*tokenize(cmd));
     const char* executable = program.getExecutable().c_str();
     char** argv = program.argv();
     execvp(executable, argv);
