@@ -21,15 +21,14 @@ void ExecutionStep::setPipe(ExecutionStep* step) {
 }
 
 void ExecutionStep::execute(int* parent_des_p) {
+  int* des_p = new int[2];
+  if (pipe(des_p) == -1) {
+    perror("Pipe failed");
+    exit(1);
+  }
 
-  if (fork() == 0) {        //first fork
+  if (fork() == 0) {
     if (toPipe != NULL) {
-      int des_p[2];
-      if (pipe(des_p) == -1) {
-        perror("Pipe failed");
-        exit(1);
-      }
-
       close(STDOUT_FILENO);          // closing stdout
       dup(des_p[1]);     // replacing stdout with pipe write
       close(des_p[0]);   // closing pipe read
