@@ -12,29 +12,32 @@ char* getinput(char *buffer, size_t buflen) {
   return fgets(buffer, buflen, stdin);
 }
 
+void run_cmd(char* cmd) {
+  pid_t pid;
+  if ((pid = fork()) == -1) {
+    fprintf(stderr, "shell: can't fork: %s\n", strerror(errno));
+    return;
+  }
+
+  if (pid == 0) {
+    execlp(cmd, cmd, (char*) 0);
+    fprintf(stderr, "shell: couldn't exec %s: %s\n", cmd, strerror(errno));
+    exit(EX_DATAERR);
+  }
+
+  int status;
+  if ((pid = waitpid(pid, &status, 0)) < 0) {
+    fprintf(stderr, "shell: waitpid error: %s\n", strerror(errno));
+  }
+}
+
 int main(int argc, char **argv) {
   char buf[1024];
-  pid_t pid;
-  int status;
 
   while (getinput(buf, sizeof(buf))) {
     buf[strlen(buf) - 1] = '\0';
-
-    if ((pid = fork()) == -1) {
-      fprintf(stderr, "shell: can't fork: %s\n", strerror(errno));
-      continue;
-    } else if (pid == 0) {
-      execlp(buf, buf, (char*) 0);
-      fprintf(stderr, "shell: couldn't exec %s: %s\n", buf, strerror(errno));
-      exit(EX_DATAERR);
-    }
-
-    if ((pid = waitpid(pid, &status, 0)) < 0) {
-      fprintf(stderr, "shell: waitpid error: %s\n", strerror(errno));
-    }
+    run_cmd(buf);
   }
 
   exit(EX_OK);
-
-  return 0;
 }
