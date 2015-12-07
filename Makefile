@@ -1,7 +1,7 @@
 all: clean build
 
 build:
-	g++ src/*.cpp -o target/ish
+	g++ -Wall -Wextra -Werror src/*.cpp -o target/ish
 
 clean:
 	rm -rf target/
