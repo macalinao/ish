@@ -2,7 +2,7 @@
 
 class Command {
   public:
-    Command(char* str);
+    Command(std::string str);
     void execute();
   private:
     std::string str;

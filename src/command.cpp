@@ -8,8 +8,9 @@
 #include <unistd.h>
 
 #include "command.h"
+#include "program.h"
 
-Command::Command(char* str) {
+Command::Command(std::string str) {
   this->str = str;
 }
 
@@ -22,7 +23,9 @@ void Command::execute() {
   }
 
   if (pid == 0) {
-    execlp(cmd, cmd, (char*) 0);
+    Program program(cmd);
+    const char* executable = program.getExecutable().c_str();
+    execvp(executable, program.argv());
     fprintf(stderr, "shell: couldn't exec %s: %s\n", cmd, strerror(errno));
     exit(EX_DATAERR);
   }
