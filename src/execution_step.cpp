@@ -1,3 +1,4 @@
+#include <iostream>
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <stdio.h>
@@ -22,6 +23,7 @@ void ExecutionStep::execute(int* pfds) {
   pfds[0] = 1;
   const char* executable = this->program->getExecutable().c_str();
   char** argv = this->program->argv();
+  std::cout << this->program->getArguments().size() << std::endl;
   execvp(executable, argv);
   fprintf(stderr, "ish: couldn't exec %s: %s\n", this->program->toString().c_str(), strerror(errno));
   exit(EX_DATAERR);

@@ -1,3 +1,4 @@
+#include <exception>
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <stdio.h>
@@ -31,6 +32,7 @@ void Command::execute() {
       start->execute(new int[3]);
     } catch (std::string ex) {
       fprintf(stderr, "ish: error running command %s: %s\n", cmd, ex.c_str());
+      return;
     }
   }
 

@@ -1,3 +1,6 @@
+#include <exception>
+#include <iostream>
+
 #include "execution_step.h"
 #include "parser.h"
 
@@ -17,14 +20,13 @@ ExecutionStep* parse_tokens(std::vector<std::string> tokens) throw (std::string)
     // pipe
     if (token == "|") {
 
-      if (!head) {
-        throw "Invalid pipe -- no step before specified.";
-      }
-
       ExecutionStep* step = new ExecutionStep(new Program(execTokens));
-
       if (executionState == STATE_INIT) {
         head = step;
+      }
+
+      if (head == NULL) {
+        throw std::string("Invalid pipe -- no step before specified.");
       }
 
       if (executionState == STATE_PIPE) {
@@ -32,6 +34,8 @@ ExecutionStep* parse_tokens(std::vector<std::string> tokens) throw (std::string)
       }
 
       prev = step;
+
+      execTokens = std::vector<std::string>();
 
     } else {
 
