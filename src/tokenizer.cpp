@@ -2,6 +2,8 @@
 #include <string>
 #include <vector>
 
+#include "tokenizer.h"
+
 std::vector<std::string>* tokenize(std::string str) {
   std::vector<std::string>* tokens = new std::vector<std::string>();
   std::string curToken = "";
