@@ -29,7 +29,9 @@ std::vector<std::string>* tokenize(std::string str) {
         break;
 
       case ' ':
-        tokens->push_back(curToken);
+        if (curToken != "") {
+          tokens->push_back(curToken);
+        }
         curToken = "";
         break;
 
