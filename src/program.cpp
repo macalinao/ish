@@ -45,9 +45,9 @@ std::vector<std::string> Program::argsWithPrefix(std::string prefix, bool negate
 }
 
 char* convert(const std::string & s) {
-	char *pc = new char[s.size() + 1];
-	std::strcpy(pc, s.c_str());
-	return pc;
+  char *pc = new char[s.size() + 1];
+  std::strcpy(pc, s.c_str());
+  return pc;
 }
 
 char** Program::argv() {
