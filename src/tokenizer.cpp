@@ -6,7 +6,6 @@ std::vector<std::string>* tokenize(std::string str) {
   std::vector<std::string>* tokens = new std::vector<std::string>();
   std::string curToken = "";
 
-  bool proceed = false;
   bool inString = false;
 
   for (std::string::iterator it = str.begin(); it != str.end(); it++) {
@@ -23,21 +22,22 @@ std::vector<std::string>* tokenize(std::string str) {
         inString = !inString;
         break;
 
+      case '|':
+        tokens->push_back(curToken);
+        tokens->push_back("|");
+        curToken = "";
+        break;
+
       case ' ':
-        proceed = true;
+        tokens->push_back(curToken);
+        curToken = "";
         break;
 
       default:
         curToken += c;
         break;
 
-    }
-
-    if (proceed) {
-      tokens->push_back(curToken);
-      curToken = "";
-      proceed = false;
-    }
+   }
 
   }
 
