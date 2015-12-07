@@ -27,7 +27,6 @@ void Command::execute() {
     const char* executable = program.getExecutable().c_str();
     char** argv = program.argv();
     execvp(executable, argv);
-    delete argv;
     fprintf(stderr, "shell: couldn't exec %s: %s\n", cmd, strerror(errno));
     exit(EX_DATAERR);
   }
