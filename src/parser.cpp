@@ -37,6 +37,8 @@ ExecutionStep* parse_tokens(std::vector<std::string> tokens) throw (std::string)
 
       execTokens = std::vector<std::string>();
 
+      executionState = STATE_PIPE;
+
     } else {
 
       execTokens.push_back(token);

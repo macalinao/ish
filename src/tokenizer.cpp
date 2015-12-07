@@ -27,7 +27,9 @@ std::vector<std::string>* tokenize(std::string str) {
       case '|':
       case '<':
       case '>':
-        tokens->push_back(curToken);
+        if (curToken != "") {
+          tokens->push_back(curToken);
+        }
         tokens->push_back(std::string(1, c));
         curToken = "";
         break;
