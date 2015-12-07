@@ -21,19 +21,12 @@ Command::Command(std::string str) {
 void Command::execute() {
   const char* cmd = this->str.c_str();
   pid_t pid;
-  if ((pid = fork()) == -1) {
-    fprintf(stderr, "ish: can't fork: %s\n", strerror(errno));
+  try {
+    ExecutionStep* start = parse_tokens(*tokenize(cmd));
+    pid = start->execute(new int[3]);
+  } catch (std::string ex) {
+    fprintf(stderr, "ish: error running command %s: %s\n", cmd, ex.c_str());
     return;
-  }
-
-  if (pid == 0) {
-    try {
-      ExecutionStep* start = parse_tokens(*tokenize(cmd));
-      start->execute(new int[3]);
-    } catch (std::string ex) {
-      fprintf(stderr, "ish: error running command %s: %s\n", cmd, ex.c_str());
-      return;
-    }
   }
 
   int status;

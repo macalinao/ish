@@ -19,11 +19,22 @@ void ExecutionStep::setPipe(ExecutionStep* step) {
   this->pipe = step;
 }
 
-void ExecutionStep::execute(int* pfds) {
+pid_t ExecutionStep::execute(int* pfds) {
+  pid_t pid;
+  if ((pid = fork()) == -1) {
+    fprintf(stderr, "ish: can't fork: %s\n", strerror(errno));
+    throw std::string();
+  }
+
+  if (pid != 0) {
+    return pid;
+  }
+
   pfds[0] = 1;
   const char* executable = this->program->getExecutable().c_str();
   char** argv = this->program->argv();
   execvp(executable, argv);
   fprintf(stderr, "ish: couldn't exec %s: %s\n", this->program->toString().c_str(), strerror(errno));
   exit(EX_DATAERR);
+  return 0;
 }
