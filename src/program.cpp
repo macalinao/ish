@@ -1,4 +1,3 @@
-#include <iostream>
 #include <stdio.h>
 #include <string>
 #include <vector>
@@ -14,6 +13,12 @@ Program::Program(std::string str) {
     args.push_back(p);
   }
   this->arguments = args;
+}
+
+Program::Program(std::vector<std::string> tokens) {
+  this->executable = tokens.front();
+  tokens.erase(tokens.begin(), tokens.begin() + 1);
+  this->arguments = tokens;
 }
 
 std::string Program::getExecutable() {
