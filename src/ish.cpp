@@ -8,7 +8,7 @@
 #include <unistd.h>
 
 char* getinput(char *buffer, size_t buflen) {
-  printf("$$ ");
+  printf("$ ");
   return fgets(buffer, buflen, stdin);
 }
 
