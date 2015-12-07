@@ -6,7 +6,7 @@ class ExecutionStep {
   public:
     ExecutionStep(Program* program);
     void setPipe(ExecutionStep* step);
-    pid_t execute(int infd);
+    void execute(int* parent_des_p);
   private:
     Program* program;
     ExecutionStep* toPipe;

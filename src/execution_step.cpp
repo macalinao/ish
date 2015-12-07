@@ -19,65 +19,44 @@ void ExecutionStep::setPipe(ExecutionStep* step) {
   this->toPipe = step;
 }
 
-pid_t ExecutionStep::execute(int infd) {
-  pid_t pid = fork();
+void ExecutionStep::execute(int* parent_des_p) {
 
-  // error check
-  if (pid == -1) {
-    throw std::string("can't fork");
+	int des_p[2];
+  if (pipe(des_p) == -1) {
+    perror("Pipe failed");
+    exit(1);
   }
 
-  if (infd != -1) {
-    close(0); // Close stdin
-    dup2(infd, 0); // redirect in from other prog to here
-  }
-
-  int fds[2];
-  if (pipe(fds) == -1) {
-    throw std::string("Pipe failed");
-  }
-
-  // return child pid
-  if (pid != 0) {
-
-    // Create pipe
+	if (fork() == 0) {        //first fork
     if (toPipe != NULL) {
-      return toPipe->execute(fds[0]);
+      close(1);          // closing stdout
+      dup(des_p[1]);     // replacing stdout with pipe write
+      close(des_p[0]);   // closing pipe read
+      close(des_p[1]);
+
+      toPipe->execute(des_p);
     }
 
-    return pid;
-  }
-
-  // Fork
-
-  if (pid == 0) {
-
-    if (toPipe != NULL) {
-      // Pipe
-      close(1); // Close stdout
-      dup(fds[1]); // Use pipe write
-    }
-
-    if (toPipe != NULL || infd != -1) {
-      close(fds[0]); // close pipe read
-      close(fds[1]);
+    if (parent_des_p != NULL) {
+      close(0);          //closing stdin
+      dup(parent_des_p[0]);     //replacing stdin with pipe read
+      close(parent_des_p[1]);   //closing pipe write
+      close(parent_des_p[0]);
     }
 
     const char* executable = this->program->getExecutable().c_str();
     char** argv = this->program->argv();
-    execvp(executable, argv);
+		execvp(executable, argv);
+		perror("execvp failed");
+		exit(1);
+	}
 
-    // Error
-    fprintf(stderr, "ish: couldn't exec %s: %s\n", this->program->toString().c_str(), strerror(errno));
-    exit(EX_DATAERR);
-    return 0;
+	if (toPipe != NULL) {
+    close(des_p[1]);
+    close(des_p[0]);
   }
 
-  int status;
-  if ((pid = waitpid(pid, &status, 0)) < 0) {
-    fprintf(stderr, "ish: waitpid error: %s\n", strerror(errno));
-  }
-
-  return pid;
+	wait(0);
+	if (toPipe != NULL) wait(0);
 
 }

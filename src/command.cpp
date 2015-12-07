@@ -15,10 +15,9 @@ Command::Command(std::string str) {
 
 void Command::execute() {
   const char* cmd = this->str.c_str();
-  pid_t pid;
   try {
     ExecutionStep* start = parse_tokens(*tokenize(cmd));
-    pid = start->execute(-1);
+    start->execute(NULL);
   } catch (std::string ex) {
     fprintf(stderr, "ish: error running command %s: %s\n", cmd, ex.c_str());
     return;
