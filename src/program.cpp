@@ -54,6 +54,5 @@ char** Program::argv() {
   argv->push_back(this->executable.c_str());
   std::transform(args.begin(), args.end(), std::back_inserter(*argv), convert);
   argv->push_back((char*) NULL);
-  // todo fix memory leak
   return (char**) &(*argv)[0];
 }
