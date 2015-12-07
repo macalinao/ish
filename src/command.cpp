@@ -18,7 +18,7 @@ void Command::execute() {
   const char* cmd = this->str.c_str();
   pid_t pid;
   if ((pid = fork()) == -1) {
-    fprintf(stderr, "shell: can't fork: %s\n", strerror(errno));
+    fprintf(stderr, "ish: can't fork: %s\n", strerror(errno));
     return;
   }
 
@@ -27,12 +27,13 @@ void Command::execute() {
     const char* executable = program.getExecutable().c_str();
     char** argv = program.argv();
     execvp(executable, argv);
-    fprintf(stderr, "shell: couldn't exec %s: %s\n", cmd, strerror(errno));
+    fprintf(stderr, "ish: couldn't exec %s: %s\n", cmd, strerror(errno));
     exit(EX_DATAERR);
   }
 
   int status;
   if ((pid = waitpid(pid, &status, 0)) < 0) {
-    fprintf(stderr, "shell: waitpid error: %s\n", strerror(errno));
+    fprintf(stderr, "ish: waitpid error: %s\n", strerror(errno));
   }
+
 }
