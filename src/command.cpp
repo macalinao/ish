@@ -7,9 +7,11 @@
 #include <sysexits.h>
 #include <unistd.h>
 
-#include "tokenizer.h"
 #include "command.h"
+#include "execution_step.h"
+#include "parser.h"
 #include "program.h"
+#include "tokenizer.h"
 
 Command::Command(std::string str) {
   this->str = str;
@@ -24,12 +26,12 @@ void Command::execute() {
   }
 
   if (pid == 0) {
-    Program program(*tokenize(cmd));
-    const char* executable = program.getExecutable().c_str();
-    char** argv = program.argv();
-    execvp(executable, argv);
-    fprintf(stderr, "ish: couldn't exec %s: %s\n", cmd, strerror(errno));
-    exit(EX_DATAERR);
+    try {
+      ExecutionStep* start = parse_tokens(*tokenize(cmd));
+      start->execute(new int[3]);
+    } catch (std::string ex) {
+      fprintf(stderr, "ish: error running command %s: %s\n", cmd, ex.c_str());
+    }
   }
 
   int status;

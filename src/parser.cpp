@@ -4,7 +4,7 @@
 #define STATE_INIT 0
 #define STATE_PIPE 1
 
-ExecutionStep* parse(std::vector<std::string> tokens) throw (std::string) {
+ExecutionStep* parse_tokens(std::vector<std::string> tokens) throw (std::string) {
   ExecutionStep* head = NULL;
   ExecutionStep* prev = NULL;
   int executionState = STATE_INIT;

@@ -61,3 +61,7 @@ char** Program::argv() {
   argv->push_back((char*) NULL);
   return (char**) &(*argv)[0];
 }
+
+std::string Program::toString() {
+  return this->executable;
+}
