@@ -23,7 +23,7 @@ void Command::execute() {
   pid_t pid;
   try {
     ExecutionStep* start = parse_tokens(*tokenize(cmd));
-    pid = start->execute(new int[3]);
+    pid = start->execute(new int[2]);
   } catch (std::string ex) {
     fprintf(stderr, "ish: error running command %s: %s\n", cmd, ex.c_str());
     return;

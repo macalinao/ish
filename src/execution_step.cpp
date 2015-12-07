@@ -16,10 +16,10 @@ ExecutionStep::ExecutionStep(Program* program) {
 }
 
 void ExecutionStep::setPipe(ExecutionStep* step) {
-  this->pipe = step;
+  this->toPipe = step;
 }
 
-pid_t ExecutionStep::execute(int* pfds) {
+pid_t ExecutionStep::execute(int* fds) {
   pid_t pid;
   if ((pid = fork()) == -1) {
     fprintf(stderr, "ish: can't fork: %s\n", strerror(errno));
@@ -30,7 +30,8 @@ pid_t ExecutionStep::execute(int* pfds) {
     return pid;
   }
 
-  pfds[0] = 1;
+  pipe(fds);
+
   const char* executable = this->program->getExecutable().c_str();
   char** argv = this->program->argv();
   execvp(executable, argv);

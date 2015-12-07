@@ -6,8 +6,8 @@ class ExecutionStep {
   public:
     ExecutionStep(Program* program);
     void setPipe(ExecutionStep* step);
-    pid_t execute(int* pfds);
+    pid_t execute(int* fds);
   private:
     Program* program;
-    ExecutionStep* pipe;
+    ExecutionStep* toPipe;
 };
