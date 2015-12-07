@@ -50,9 +50,9 @@ const char* convert(const std::string & s) {
 
 char** Program::argv() {
   std::vector<std::string> args = this->arguments;
-  std::vector<const char*> argv;
-  argv.push_back(this->executable.c_str());
-  std::transform(args.begin(), args.end(), std::back_inserter(argv), convert);
-  argv.push_back((char*) NULL);
-  return (char**) &argv[0];
+  std::vector<const char*>* argv = new std::vector<const char*>();
+  argv->push_back(this->executable.c_str());
+  std::transform(args.begin(), args.end(), std::back_inserter(*argv), convert);
+  argv->push_back((char*) NULL);
+  return (char**) &(*argv)[0];
 }
