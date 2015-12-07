@@ -34,12 +34,21 @@ pid_t ExecutionStep::execute(int* fds) {
   // return child pid
   if (pid != 0) {
     return pid;
+  } else {
+
+    const char* executable = this->program->getExecutable().c_str();
+    char** argv = this->program->argv();
+    execvp(executable, argv);
+
+    // Error
+    fprintf(stderr, "ish: couldn't exec %s: %s\n", this->program->toString().c_str(), strerror(errno));
+    exit(EX_DATAERR);
+    return 0;
+
   }
 
-  const char* executable = this->program->getExecutable().c_str();
-  char** argv = this->program->argv();
-  execvp(executable, argv);
-  fprintf(stderr, "ish: couldn't exec %s: %s\n", this->program->toString().c_str(), strerror(errno));
-  exit(EX_DATAERR);
-  return 0;
+  int status;
+  if ((pid = waitpid(pid, &status, 0)) < 0) {
+    fprintf(stderr, "ish: waitpid error: %s\n", strerror(errno));
+  }
 }

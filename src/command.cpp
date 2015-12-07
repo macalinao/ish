@@ -1,11 +1,6 @@
-#include <exception>
-#include <sys/types.h>
-#include <sys/wait.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <errno.h>
-#include <sysexits.h>
 #include <unistd.h>
 
 #include "command.h"
@@ -28,10 +23,4 @@ void Command::execute() {
     fprintf(stderr, "ish: error running command %s: %s\n", cmd, ex.c_str());
     return;
   }
-
-  int status;
-  if ((pid = waitpid(pid, &status, 0)) < 0) {
-    fprintf(stderr, "ish: waitpid error: %s\n", strerror(errno));
-  }
-
 }
