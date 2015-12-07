@@ -11,7 +11,7 @@ char* getinput(char *buffer, size_t buflen) {
   return fgets(buffer, buflen, stdin);
 }
 
-int main(int argc, char **argv) {
+int main() {
   char buf[1024];
 
   while (getinput(buf, sizeof(buf))) {
