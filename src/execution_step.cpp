@@ -30,7 +30,7 @@ void ExecutionStep::execute(int* parent_des_p) {
         exit(1);
       }
 
-      close(1);          // closing stdout
+      close(STDOUT_FILENO);          // closing stdout
       dup(des_p[1]);     // replacing stdout with pipe write
       close(des_p[0]);   // closing pipe read
       close(des_p[1]);
@@ -40,7 +40,7 @@ void ExecutionStep::execute(int* parent_des_p) {
 
     if (parent_des_p != NULL) {
       close(0);          //closing stdin
-      dup(parent_des_p[0]);     //replacing stdin with pipe read
+      dup2(parent_des_p[0], STDIN_FILENO);     //replacing stdin with pipe read
       close(parent_des_p[1]);   //closing pipe write
       close(parent_des_p[0]);
     }
