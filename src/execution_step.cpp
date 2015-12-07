@@ -20,38 +20,42 @@ void ExecutionStep::setPipe(ExecutionStep* step) {
   this->toPipe = step;
 }
 
-void ExecutionStep::execute(int* parent_des_p) {
-  int* des_p = new int[2];
-  if (pipe(des_p) == -1) {
+void ExecutionStep::execute(int in_fd) {
+
+  const char* executable = this->program->getExecutable().c_str();
+  char** argv = this->program->argv();
+
+  if (toPipe == NULL) {
+    dup2(in_fd, STDIN_FILENO);
+    execvp(executable, argv);
+    return;
+  }
+
+  int fd[2];
+  if (pipe(fd) == -1) {
     perror("Pipe failed");
     exit(1);
   }
 
-  if (fork() == 0) {
-    if (toPipe != NULL) {
-      close(STDOUT_FILENO);          // closing stdout
-      dup(des_p[1]);     // replacing stdout with pipe write
-      close(des_p[0]);   // closing pipe read
-      close(des_p[1]);
+  switch (fork()) {
+    case -1:
+      perror("Fork failed");
+      exit(1);
+      break;
 
-      toPipe->execute(des_p);
-    }
+    case 0:
+      close(fd[0]); /* unused */
+      dup2(in_fd, STDIN_FILENO);  /* read from in_fd */
+      dup2(fd[1], STDOUT_FILENO); /* write to fd[1] */
+      execvp(executable, argv);
+      perror("execvp failed");
+      exit(1);
+      break;
 
-    if (parent_des_p != NULL) {
-      close(0);          //closing stdin
-      dup2(parent_des_p[0], STDIN_FILENO);     //replacing stdin with pipe read
-      close(parent_des_p[1]);   //closing pipe write
-      close(parent_des_p[0]);
-    }
-
-    const char* executable = this->program->getExecutable().c_str();
-    char** argv = this->program->argv();
-    execvp(executable, argv);
-    perror("execvp failed");
-    exit(1);
+    default: /* parent: execute the rest of the commands */
+      close(fd[1]); /* unused */
+      close(in_fd); /* unused */
+      toPipe->execute(fd[0]); /* execute the rest */
   }
-
-  wait(0);
-  if (toPipe != NULL) wait(0);
 
 }
