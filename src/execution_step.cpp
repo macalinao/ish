@@ -43,14 +43,10 @@ void ExecutionStep::execute(int in_fd) {
   const char* executable = this->program->getExecutable().c_str();
   char** argv = this->program->argv();
 
-  int out_fd = -1;
-  if (outfile != "") {
-    out_fd = open((char*) outfile.c_str(), O_WRONLY | O_CREAT, 0666);
-  }
-
   if (toPipe == NULL) {
     dup2(in_fd, STDIN_FILENO);
-    if (out_fd != -1) {
+    if (outfile != "") {
+      int out_fd = open((char*) outfile.c_str(), O_WRONLY | O_CREAT, 0666);
       dup2(out_fd, STDOUT_FILENO);
     }
     execvp(executable, argv);
@@ -72,18 +68,25 @@ void ExecutionStep::execute(int in_fd) {
       break;
 
     case 0:
-      close(fd[0]); /* unused */
-      dup2(in_fd, STDIN_FILENO);  /* read from in_fd */
-      dup2(fd[1], STDOUT_FILENO); /* write to fd[1] */
+      close(fd[0]);
+      if (infile != "") {
+        int in_fd = open((char*) infile.c_str(), O_RDONLY, 0666);
+        if (in_fd < 0) {
+          perror("File not found");
+          exit(1);
+        }
+      }
+      dup2(in_fd, STDIN_FILENO);
+      dup2(fd[1], STDOUT_FILENO);
       execvp(executable, argv);
       perror("execvp failed");
       exit(1);
       break;
 
-    default: /* parent: execute the rest of the commands */
-      close(fd[1]); /* unused */
-      close(in_fd); /* unused */
-      toPipe->execute(fd[0]); /* execute the rest */
+    default:
+      close(fd[1]);
+      close(in_fd);
+      toPipe->execute(fd[0]);
   }
 
 }
