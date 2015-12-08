@@ -1,4 +1,4 @@
-all: clean build
+all: clean build package
 
 build:
 	g++ -Wall -Wextra -Werror src/*.cpp -o target/ish
@@ -12,5 +12,8 @@ clean:
 
 install:
 	cp target/ish /usr/local/bin
+
+package: clean
+	tar --exclude='./target/' --exclude='.git' -czf target/ish.tar.gz .
 
 .PHONY: build clean install
