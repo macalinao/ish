@@ -44,6 +44,8 @@ void ExecutionStep::execute(int in_fd) {
   if (toPipe == NULL) {
     dup2(in_fd, STDIN_FILENO);
     execvp(executable, argv);
+    perror("execvp failed");
+    exit(1);
     return;
   }
 
