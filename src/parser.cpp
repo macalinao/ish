@@ -53,7 +53,7 @@ std::vector<ExecutionStep*> parse_tokens(std::vector<std::string> tokens) throw 
       execTokens = std::vector<std::string>();
       executionState = STATE_PIPE;
 
-    } else if (token == ">") {
+    } else if (token == ">" || token == ">>") {
 
       if (execTokens.size() == 0) {
         throw std::string("No tokens.");
@@ -70,6 +70,9 @@ std::vector<ExecutionStep*> parse_tokens(std::vector<std::string> tokens) throw 
       }
       it++;
       step->setOutfile(*it);
+      if (token == ">>") {
+        step->setOutappend(true);
+      }
       execTokens = std::vector<std::string>();
       prev = step;
       executionState = STATE_PIPE;

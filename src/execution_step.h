@@ -9,6 +9,7 @@ class ExecutionStep {
     void setPipe(ExecutionStep* step);
     void setInfile(std::string file);
     void setOutfile(std::string file);
+    void setOutappend(bool val);
     void execute(int in_fd);
     void describe();
     void describeR();
@@ -18,4 +19,5 @@ class ExecutionStep {
     ExecutionStep* toPipe;
     std::string infile;
     std::string outfile;
+    bool outappend;
 };

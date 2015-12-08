@@ -19,6 +19,7 @@ ExecutionStep::ExecutionStep(Program* program) {
   this->toPipe = NULL;
   this->infile = "";
   this->outfile = "";
+  this->outappend = false;
 }
 
 void ExecutionStep::setPipe(ExecutionStep* step) {
@@ -31,6 +32,10 @@ void ExecutionStep::setInfile(std::string file) {
 
 void ExecutionStep::setOutfile(std::string file) {
   outfile = file;
+}
+
+void ExecutionStep::setOutappend(bool val) {
+  outappend = val;
 }
 
 void ExecutionStep::execute(int in_fd) {
