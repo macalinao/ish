@@ -111,7 +111,11 @@ void ExecutionStep::describe() {
     std::cout << "File: " << infile << std::endl;
   }
   if (!outfile.empty()) {
-    std::cout << "File Redirection: >" << std::endl;
+    if (outappend) {
+      std::cout << "File Redirection: >>" << std::endl;
+    } else {
+      std::cout << "File Redirection: >" << std::endl;
+    }
     std::cout << "File: " << outfile << std::endl;
   }
 }
