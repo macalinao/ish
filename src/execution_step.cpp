@@ -59,7 +59,7 @@ void ExecutionStep::execute(int in_fd) {
     }
     dup2(in_fd, STDIN_FILENO);
     if (outfile != "") {
-      int out_fd = open((char*) outfile.c_str(), O_WRONLY | O_CREAT, 0666);
+      int out_fd = open((char*) outfile.c_str(), O_WRONLY | O_CREAT | (outappend ? O_APPEND : 0) | (outappend ? 0 : O_TRUNC), 0666);
       dup2(out_fd, STDOUT_FILENO);
     }
     execvp(executable, argv);
