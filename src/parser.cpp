@@ -88,8 +88,8 @@ std::vector<ExecutionStep*> parse_tokens(std::vector<std::string> tokens) throw 
     } else if (executionState == STATE_PIPE) {
       prev->setPipe(end);
     }
-    ret.push_back(head);
   }
+  ret.push_back(head);
 
   return ret;
 }

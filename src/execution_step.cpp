@@ -1,4 +1,6 @@
+#include <fcntl.h>
 #include <iostream>
+#include <sys/stat.h>
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <stdio.h>
@@ -41,8 +43,16 @@ void ExecutionStep::execute(int in_fd) {
   const char* executable = this->program->getExecutable().c_str();
   char** argv = this->program->argv();
 
+  int out_fd = -1;
+  if (outfile != "") {
+    out_fd = open((char*) outfile.c_str(), O_WRONLY | O_CREAT, 0666);
+  }
+
   if (toPipe == NULL) {
     dup2(in_fd, STDIN_FILENO);
+    if (out_fd != -1) {
+      dup2(out_fd, STDOUT_FILENO);
+    }
     execvp(executable, argv);
     perror("execvp failed");
     exit(1);
