@@ -5,7 +5,7 @@ ian shell. A really crappy shell written in C++.
 ## Features
 
 * Running a command with arguments and options, e.g. `ls -hail /`
-* Piping, e.g. `ls -l | wc -l`.
+* Piping, e.g. `ls -l | grep . | wc -l`.
 * Redirecting a file as input, e.g. `cat < README.md`
 * Redirecting output to file, e.g. `ls > files.txt`
 * Appending output to file, e.g. `ls >> files_appended.txt`
