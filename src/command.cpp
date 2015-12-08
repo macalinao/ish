@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+#include <vector>
 
 #include "command.h"
 #include "execution_step.h"
@@ -16,9 +17,10 @@ Command::Command(std::string str) {
 void Command::execute() {
   const char* cmd = this->str.c_str();
   try {
-    ExecutionStep* start = parse_tokens(*tokenize(cmd));
-    start->execute(-1);
-    wait(0);
+    std::vector<ExecutionStep*> steps = parse_tokens(*tokenize(cmd));
+    for (std::vector<ExecutionStep*>::iterator it = steps.begin(); it != steps.end(); it++) {
+      (*it)->execute(-1);
+    }
   } catch (std::string ex) {
     fprintf(stderr, "ish: error running command %s: %s\n", cmd, ex.c_str());
     return;
