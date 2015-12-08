@@ -20,7 +20,11 @@ void Command::execute() {
   try {
     std::vector<ExecutionStep*> steps = parse_tokens(*tokenize(cmd));
     for (std::vector<ExecutionStep*>::iterator it = steps.begin(); it != steps.end(); it++) {
+#if PARSE_ONLY
+      (*it)->describeR();
+#else
       (*it)->execute(-1);
+#endif
     }
   } catch (std::string ex) {
     fprintf(stderr, "ish: error running command %s: %s\n", cmd, ex.c_str());
