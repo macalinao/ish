@@ -14,6 +14,7 @@
 ExecutionStep::ExecutionStep(Program* program) {
   this->program = program;
   this->toPipe = NULL;
+  this->outFile = "";
 }
 
 void ExecutionStep::setPipe(ExecutionStep* step) {

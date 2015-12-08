@@ -10,4 +10,5 @@ class ExecutionStep {
   private:
     Program* program;
     ExecutionStep* toPipe;
+    std::string outFile;
 };
