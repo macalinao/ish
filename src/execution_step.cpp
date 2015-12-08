@@ -53,7 +53,7 @@ void ExecutionStep::execute(int in_fd) {
     if (infile != "") {
       in_fd = open((char*) infile.c_str(), O_RDONLY, 0666);
       if (in_fd < 0) {
-        perror("File not found");
+        perror("Error opening file for reading");
         exit(1);
       }
     }
@@ -85,7 +85,7 @@ void ExecutionStep::execute(int in_fd) {
       if (infile != "") {
         in_fd = open((char*) infile.c_str(), O_RDONLY, 0666);
         if (in_fd < 0) {
-          perror("File not found");
+          perror("Error opening file for reading");
           exit(1);
         }
       }
