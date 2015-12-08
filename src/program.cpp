@@ -1,3 +1,5 @@
+#include <iostream>
+#include <sstream>
 #include <stdio.h>
 #include <string>
 #include <vector>
@@ -64,4 +66,25 @@ char** Program::argv() {
 
 std::string Program::toString() {
   return this->executable;
+}
+
+void Program::describe() {
+  std::cout << "Command: " << this->executable << std::endl;
+
+  std::vector<std::string> opts = getOptions();
+  std::vector<std::string> args = getArgumentsWithoutOptions();
+
+  std::stringstream optss;
+  for (std::vector<std::string>::iterator it = opts.begin(); it != opts.end(); it++) {
+    optss << *it << " ";
+  }
+
+  std::cout << "Options: " << optss.str() << std::endl;
+
+  std::stringstream argss;
+  for (std::vector<std::string>::iterator it = args.begin(); it != args.end(); it++) {
+    argss << *it << " ";
+  }
+
+  std::cout << "Arguments: " << argss.str() << std::endl;
 }

@@ -14,6 +14,7 @@ class Program {
     std::vector<std::string> getOptions();
     char** argv();
     std::string toString();
+    void describe();
 
   private:
     std::string executable;

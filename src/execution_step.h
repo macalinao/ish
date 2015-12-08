@@ -10,6 +10,8 @@ class ExecutionStep {
     void setInfile(std::string file);
     void setOutfile(std::string file);
     void execute(int in_fd);
+    void describe();
+    void describeR();
 
   private:
     Program* program;

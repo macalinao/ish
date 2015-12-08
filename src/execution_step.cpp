@@ -3,6 +3,7 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <sys/wait.h>
+#include <sstream>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -96,4 +97,24 @@ void ExecutionStep::execute(int in_fd) {
       toPipe->execute(fd[0]);
   }
 
+}
+
+void ExecutionStep::describe() {
+  program->describe();
+  if (!infile.empty()) {
+    std::cout << "File Redirection: <" << std::endl;
+    std::cout << "File: " << infile << std::endl;
+  }
+  if (!outfile.empty()) {
+    std::cout << "File Redirection: >" << std::endl;
+    std::cout << "File: " << outfile << std::endl;
+  }
+}
+
+void ExecutionStep::describeR() {
+  describe();
+  if (toPipe != NULL) {
+    std::cout << "Pipe" << std::endl;
+    toPipe->describeR();
+  }
 }
