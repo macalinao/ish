@@ -14,11 +14,20 @@
 ExecutionStep::ExecutionStep(Program* program) {
   this->program = program;
   this->toPipe = NULL;
-  this->outFile = "";
+  this->infile = "";
+  this->outfile = "";
 }
 
 void ExecutionStep::setPipe(ExecutionStep* step) {
-  this->toPipe = step;
+  toPipe = step;
+}
+
+void ExecutionStep::setInfile(std::string file) {
+  infile = file;
+}
+
+void ExecutionStep::setOutfile(std::string file) {
+  outfile = file;
 }
 
 void ExecutionStep::execute(int in_fd) {

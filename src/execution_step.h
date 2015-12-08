@@ -3,12 +3,17 @@
 #include "program.h"
 
 class ExecutionStep {
+
   public:
     ExecutionStep(Program* program);
     void setPipe(ExecutionStep* step);
+    void setInfile(std::string file);
+    void setOutfile(std::string file);
     void execute(int in_fd);
+
   private:
     Program* program;
     ExecutionStep* toPipe;
-    std::string outFile;
+    std::string infile;
+    std::string outfile;
 };
