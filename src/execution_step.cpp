@@ -44,6 +44,13 @@ void ExecutionStep::execute(int in_fd) {
   char** argv = this->program->argv();
 
   if (toPipe == NULL) {
+    if (infile != "") {
+      in_fd = open((char*) infile.c_str(), O_RDONLY, 0666);
+      if (in_fd < 0) {
+        perror("File not found");
+        exit(1);
+      }
+    }
     dup2(in_fd, STDIN_FILENO);
     if (outfile != "") {
       int out_fd = open((char*) outfile.c_str(), O_WRONLY | O_CREAT, 0666);
@@ -70,7 +77,7 @@ void ExecutionStep::execute(int in_fd) {
     case 0:
       close(fd[0]);
       if (infile != "") {
-        int in_fd = open((char*) infile.c_str(), O_RDONLY, 0666);
+        in_fd = open((char*) infile.c_str(), O_RDONLY, 0666);
         if (in_fd < 0) {
           perror("File not found");
           exit(1);
