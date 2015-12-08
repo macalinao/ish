@@ -5,17 +5,13 @@
 #include "execution_step.h"
 #include "parser.h"
 
-#define STATE_INIT 0
-#define STATE_PIPE 1
-
 std::vector<ExecutionStep*> parse_tokens(std::vector<std::string> tokens) throw (std::string) {
 
   std::vector<ExecutionStep*> ret;
 
   ExecutionStep* head = NULL;
   ExecutionStep* prev = NULL;
-  int executionState = STATE_INIT;
-
+  ExecutionStep* cur = NULL;
   std::vector<std::string> execTokens;
 
   for (std::vector<std::string>::iterator it = tokens.begin(); it != tokens.end(); it++) {
@@ -23,59 +19,51 @@ std::vector<ExecutionStep*> parse_tokens(std::vector<std::string> tokens) throw 
 
     if (token == ";" || token == "\n") {
 
-      if (execTokens.size() == 0) {
-        continue;
+      if (execTokens.size() != 0) {
+        cur = new ExecutionStep(new Program(execTokens));
+        if (prev != NULL) {
+          prev->setPipe(cur);
+        } else {
+          head = cur;
+        }
       }
 
-      ExecutionStep* end = new ExecutionStep(new Program(execTokens));
-      if (executionState == STATE_INIT) {
-        head = end;
-      } else if (executionState == STATE_PIPE) {
-        prev->setPipe(end);
-      }
       ret.push_back(head);
-      executionState = STATE_INIT;
       execTokens = std::vector<std::string>();
 
     } else if (token == "|") {
 
-      ExecutionStep* step = new ExecutionStep(new Program(execTokens));
-      if (executionState == STATE_INIT) {
-        head = step;
+      if (cur == NULL) {
+        if (execTokens.size() == 0) {
+          throw std::string("No tokens.");
+        }
+        cur = new ExecutionStep(new Program(execTokens));
       }
-      if (head == NULL) {
-        throw std::string("Invalid pipe -- no step before specified.");
+
+      if (prev != NULL) {
+        prev->setPipe(cur);
+      } else {
+        head = cur;
       }
-      if (executionState == STATE_PIPE) {
-        prev->setPipe(step);
-      }
-      prev = step;
+      prev = cur;
+      cur = NULL;
       execTokens = std::vector<std::string>();
-      executionState = STATE_PIPE;
 
     } else if (token == ">" || token == ">>") {
 
-      if (execTokens.size() == 0) {
-        throw std::string("No tokens.");
+      if (cur == NULL) {
+        if (execTokens.size() == 0) {
+          throw std::string("No tokens.");
+        }
+        cur = new ExecutionStep(new Program(execTokens));
       }
-      ExecutionStep* step = new ExecutionStep(new Program(execTokens));
-      if (executionState == STATE_INIT) {
-        head = step;
-      }
-      if (head == NULL) {
-        throw std::string("Invalid out redirect -- no step before specified.");
-      }
-      if (executionState == STATE_PIPE) {
-        prev->setPipe(step);
-      }
+
       it++;
-      step->setOutfile(*it);
+      cur->setOutfile(*it);
       if (token == ">>") {
-        step->setOutappend(true);
+        cur->setOutappend(true);
       }
       execTokens = std::vector<std::string>();
-      prev = step;
-      executionState = STATE_PIPE;
 
     } else {
 
@@ -84,12 +72,21 @@ std::vector<ExecutionStep*> parse_tokens(std::vector<std::string> tokens) throw 
     }
   }
 
-  if (execTokens.size() > 0) {
-    ExecutionStep* end = new ExecutionStep(new Program(execTokens));
-    if (executionState == STATE_INIT) {
-      head = end;
-    } else if (executionState == STATE_PIPE) {
-      prev->setPipe(end);
+  if (cur != NULL) {
+    if (prev != NULL) {
+      prev->setPipe(cur);
+    } else {
+      head = cur;
+    }
+    cur = NULL;
+  }
+
+  if (execTokens.size() > 0 && cur == NULL) {
+    cur = new ExecutionStep(new Program(execTokens));
+    if (prev != NULL) {
+      prev->setPipe(cur);
+    } else {
+      head = cur;
     }
   }
   ret.push_back(head);
