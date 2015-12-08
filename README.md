@@ -9,6 +9,7 @@ ian shell. A really crappy shell written in C++.
 * Redirecting a file as input, e.g. `cat < README.md`
 * Redirecting output to file, e.g. `ls > files.txt`
 * Appending output to file, e.g. `ls >> files_appended.txt`
+* Double-quoted strings as arguments, e.g. `grep "my string" test.txt`
 
 ### Parse only
 
