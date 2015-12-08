@@ -24,6 +24,8 @@ std::vector<std::string>* tokenize(std::string str) {
         inString = !inString;
         break;
 
+      case '\n':
+      case ';':
       case '|':
       case '<':
       case '>':
