@@ -1,7 +1,9 @@
+#include <algorithm>
 #include <iostream>
 #include <sstream>
 #include <stdio.h>
 #include <string>
+#include <string.h>
 #include <vector>
 
 #include "program.h"
