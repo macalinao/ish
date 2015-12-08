@@ -49,7 +49,7 @@ std::vector<ExecutionStep*> parse_tokens(std::vector<std::string> tokens) throw 
       cur = NULL;
       execTokens = std::vector<std::string>();
 
-    } else if (token == ">" || token == ">>") {
+    } else if (token == "<" || token == ">" || token == ">>") {
 
       if (cur == NULL) {
         if (execTokens.size() == 0) {
@@ -59,9 +59,13 @@ std::vector<ExecutionStep*> parse_tokens(std::vector<std::string> tokens) throw 
       }
 
       it++;
-      cur->setOutfile(*it);
-      if (token == ">>") {
-        cur->setOutappend(true);
+      if (token == "<") {
+        cur->setInfile(*it);
+      } else {
+        cur->setOutfile(*it);
+        if (token == ">>") {
+          cur->setOutappend(true);
+        }
       }
       execTokens = std::vector<std::string>();
 
