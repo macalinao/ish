@@ -6,7 +6,9 @@ ian shell. A really crappy shell written in C++.
 
 * Running a command with arguments and options, e.g. `ls -hail /`
 * Piping, e.g. `ls -l | wc -l`.
-* Redirection operators `>`, `>>`, and `<`. Note that these only work at the end and the beginning of the pipeline.
+* Redirecting a file as input, e.g. `cat < README.md`
+* Redirecting output to file, e.g. `ls > files.txt`
+* Appending output to file, e.g. `ls >> files_appended.txt`
 
 ## Installing
 
